@@ -34,14 +34,14 @@ public class SwiftImagesPickerPlugin: NSObject, FlutterPlugin {
       
       let vc = UIApplication.shared.delegate!.window!!.rootViewController!;
       let ac = ZLPhotoPreviewSheet();
-      let config = ZLPhotoUIConfiguration.default();
-      self.setLanguage(configuration: config, language: language);
-//      self.setConfig(configuration: config, pickType: pickType);
-//      config.maxSelectCount = count;
-//      config.allowSelectGif = supportGif;
-//      config.maxSelectVideoDuration = maxTime;
+      let config = ZLPhotoConfiguration.default();
+//      self.setLanguage(configuration: config, language: language);
+      self.setConfig(configuration: config, pickType: pickType);
+      config.maxSelectCount = count;
+      config.allowSelectGif = supportGif;
+      config.maxSelectVideoDuration = maxTime;
       if cropOption != nil {
-//        config.allowEditImage = true;
+        config.allowEditImage = true;
         let corpType = cropOption!["cropType"] as! String;
         let editConfig = ZLEditImageConfiguration();
         if (corpType=="CropType.circle") {
@@ -51,7 +51,7 @@ public class SwiftImagesPickerPlugin: NSObject, FlutterPlugin {
             editConfig.clipRatios = [ZLImageClipRatio(title: "", whRatio: CGFloat(aspectRatioX/aspectRatioY))];
           }
         }
-//        config.editImageConfiguration = editConfig;
+        config.editImageConfiguration = editConfig;
       }
       
 //      self.setThemeColor(configuration: config, colors: theme);
