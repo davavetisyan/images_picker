@@ -34,14 +34,14 @@ public class SwiftImagesPickerPlugin: NSObject, FlutterPlugin {
       
       let vc = UIApplication.shared.delegate!.window!!.rootViewController!;
       let ac = ZLPhotoPreviewSheet();
-      let config = ZLPhotoConfiguration.default();
+      let config = ZLPhotoUIConfiguration.default();
       self.setLanguage(configuration: config, language: language);
-      self.setConfig(configuration: config, pickType: pickType);
-      config.maxSelectCount = count;
-      config.allowSelectGif = supportGif;
-      config.maxSelectVideoDuration = maxTime;
+//      self.setConfig(configuration: config, pickType: pickType);
+//      config.maxSelectCount = count;
+//      config.allowSelectGif = supportGif;
+//      config.maxSelectVideoDuration = maxTime;
       if cropOption != nil {
-        config.allowEditImage = true;
+//        config.allowEditImage = true;
         let corpType = cropOption!["cropType"] as! String;
         let editConfig = ZLEditImageConfiguration();
         if (corpType=="CropType.circle") {
@@ -51,12 +51,14 @@ public class SwiftImagesPickerPlugin: NSObject, FlutterPlugin {
             editConfig.clipRatios = [ZLImageClipRatio(title: "", whRatio: CGFloat(aspectRatioX/aspectRatioY))];
           }
         }
-        config.editImageConfiguration = editConfig;
+//        config.editImageConfiguration = editConfig;
       }
       
-      self.setThemeColor(configuration: config, colors: theme);
+//      self.setThemeColor(configuration: config, colors: theme);
       
-      ac.selectImageBlock = { (images, assets, isOriginal) in
+      ac.selectImageBlock = {  [weak self] (results, _) in
+        let images = results.map { $0.image }
+        let assets = results.map { $0.asset }
         var resArr = [[String: StringOrInt]]();
         let manager = PHImageManager.default();
         let options = PHVideoRequestOptions();
@@ -69,13 +71,13 @@ public class SwiftImagesPickerPlugin: NSObject, FlutterPlugin {
           group.enter();
           if asset.mediaType==PHAssetMediaType.image {
             let image = images[index];
-            if self.getImageType(asset: asset)=="gif" && supportGif { // gif 取原路径
-              self.resolveImage(asset: asset, resultHandler: { dir in
+            if self?.getImageType(asset: asset)=="gif" && supportGif { // gif 取原路径
+              self?.resolveImage(asset: asset, resultHandler: { dir in
                 resArr.append(dir);
                 group.leave();
               });
             } else {
-              resArr.append(self.resolveImage(image: image, maxSize: maxSize));
+              resArr.append(self!.resolveImage(image: image, maxSize: maxSize));
               group.leave();
             }
           } else if asset.mediaType==PHAssetMediaType.video {
@@ -83,7 +85,7 @@ public class SwiftImagesPickerPlugin: NSObject, FlutterPlugin {
               let videoUrl = avasset as! AVURLAsset;
               let url = videoUrl.url;
               // TODO: mov to mp4
-              resArr.append(self.resolveVideo(url: url));
+              resArr.append(self!.resolveVideo(url: url));
               group.leave();
             })
           } else {
@@ -111,8 +113,8 @@ public class SwiftImagesPickerPlugin: NSObject, FlutterPlugin {
       let camera = ZLCustomCamera();
 //      let cameraConfig = ZLCameraConfiguration();
       let config = ZLPhotoConfiguration.default();
-      config.maxRecordDuration = maxTime ?? 15;
-      self.setLanguage(configuration: config, language: language);
+//      config.maxRecordDuration = maxTime ?? 15;
+//      self.setLanguage(configuration: config, language: language);
       self.setConfig(configuration: config, pickType: pickType);
       if cropOption != nil {
         config.allowEditImage = true;
@@ -128,7 +130,7 @@ public class SwiftImagesPickerPlugin: NSObject, FlutterPlugin {
         config.editImageConfiguration = editConfig;
       }
       
-      self.setThemeColor(configuration: config, colors: theme);
+//      self.setThemeColor(configuration: config, colors: theme);
       
       camera.takeDoneBlock = { (image, url) in
         if let image = image {
@@ -464,7 +466,7 @@ public class SwiftImagesPickerPlugin: NSObject, FlutterPlugin {
     configuration.allowSlideSelect = false;
   }
   
-  private func setLanguage(configuration: ZLPhotoConfiguration, language: String) {
+  private func setLanguage(configuration: ZLPhotoUIConfiguration, language: String) {
     switch language {
     case "Language.Chinese":
       configuration.languageType = .chineseSimplified;
@@ -495,8 +497,4 @@ public class SwiftImagesPickerPlugin: NSObject, FlutterPlugin {
     }
   }
   
-  private func setThemeColor(configuration: ZLPhotoConfiguration, colors: NSDictionary?) {
-    let theme = ZLPhotoThemeColorDeploy();
-//    configuration.themeColorDeploy = theme;
-  }
 }
