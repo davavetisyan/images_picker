@@ -86,14 +86,6 @@ public class ImagesPickerPlugin implements FlutterPlugin, MethodCallHandler, Act
     context = flutterPluginBinding.getApplicationContext();
   }
 
-  public static void registerWith(Registrar registrar) {
-    ImagesPickerPlugin instance = new ImagesPickerPlugin();
-    final MethodChannel channel = new MethodChannel(registrar.messenger(), channelName);
-    channel.setMethodCallHandler(instance);
-    instance.context = registrar.context();
-    registrar.addRequestPermissionsResultListener(instance);
-  }
-
   @Override
   public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
     channel.setMethodCallHandler(null);
