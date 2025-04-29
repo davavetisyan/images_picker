@@ -47,7 +47,6 @@ import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry;
-import io.flutter.plugin.common.PluginRegistry.Registrar;
 
 import com.luck.picture.lib.PictureSelectionModel;
 import com.luck.picture.lib.PictureSelector;
@@ -356,12 +355,16 @@ public class ImagesPickerPlugin implements FlutterPlugin, MethodCallHandler, Act
   }
 
     @Override
-    public boolean onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public boolean onRequestPermissionsResult(int requestCode,
+                                              String[] permissions,
+                                              int[] grantResults) {
       if (requestCode == WRITE_IMAGE_CODE && grantResults[0] == PERMISSION_GRANTED && grantResults[1] == PERMISSION_GRANTED) {
           saveImageToGallery(WRITE_IMAGE_PATH, ALBUM_NAME);
           return true;
       }
-      if (requestCode == WRITE_VIDEO_CODE && grantResults[0] == PERMISSION_GRANTED && grantResults[1] == PERMISSION_GRANTED) {
+      if (requestCode == WRITE_VIDEO_CODE && grantResults[0] == PERMISSION_GRANTED
+              &&
+              grantResults[1] == PERMISSION_GRANTED ) {
           saveVideoToGallery(WRITE_VIDEO_PATH, ALBUM_NAME);
           return true;
       }
