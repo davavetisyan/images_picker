@@ -8,7 +8,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.0.1'
+        classpath 'com.android.tools.build:gradle:8.2.2'
     }
 }
 
@@ -23,13 +23,14 @@ rootProject.allprojects {
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 31
+    namespace 'com.chavesgu.images_picker'
+    compileSdkVersion 34
 
     defaultConfig {
         minSdkVersion 21
         consumerProguardFiles 'consumer-proguard-rules.pro'
     }
-    lintOptions {
+    lint {
         disable 'InvalidPackage'
     }
 }
